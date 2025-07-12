@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Zuxo.AI</title>
+  <link rel="stylesheet" href="popup.output.css">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-[400px] p-6 w-[350px]">
+  <div id="login_container" class="text-center">
+    <!-- Logo/Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        Zuxo.AI
+      </h1>
+      <p class="text-gray-600 mt-2">Your Smart Link Organizer</p>
+    </div>
+
+    <!-- Login Button -->
+    <button id="login_with_linkedin" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mb-6 flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+      </svg>
+      Login with LinkedIn
+    </button>
+
+    <!-- Info Cards -->
+    <div class="space-y-4">
+      <div class="bg-white rounded-lg p-4 shadow-md border border-gray-100">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-800">Quick Save</h3>
+        </div>
+        <p class="text-gray-600 text-sm">Click the floating button to save pages instantly!</p>
+      </div>
+
+      <div class="bg-white rounded-lg p-4 shadow-md border border-gray-100">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-800">Smart Organization</h3>
+        </div>
+        <p class="text-gray-600 text-sm">Automatically categorize your saved links into specific categories.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="loggedin_container" class="hidden text-center space-y-6">
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        Zuxo.AI
+      </h1>
+      <p class="text-gray-600 mt-2">Welcome, <span id="profile_name"></span>!</p>
+    </div>
+    <div class="flex flex-col items-center space-y-2">
+      <img id="profile_picture" class="w-16 h-16 rounded-full border-2 border-indigo-400" src="" alt="Profile Picture" style="display:none;"/>
+      <p class="text-gray-700 text-sm mt-2" id="profile_email"></p>
+    </div>
+    <div class="text-center">
+      <button id="go_to_dashboard" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mb-6 flex items-center justify-center gap-2">
+        Go to Dashboard
+      </button>
+      <button id="logout" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mb-6 flex items-center justify-center gap-2">
+        Logout
+      </button>
+    </div>
+  </div>
+</body>
+<script src="popup.js"></script>
+
+</html>
