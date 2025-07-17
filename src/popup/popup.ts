@@ -8,16 +8,17 @@ function showLogin() {
 function showLoggedIn(profile: { name: string, email?: string, picture?: string }) {
   document.getElementById('login_container')!.classList.add('hidden');
   document.getElementById('loggedin_container')!.classList.remove('hidden');
+
   (document.getElementById('profile_name') as HTMLElement).textContent = profile.name;
-  if (profile.email) {
-    (document.getElementById('profile_email') as HTMLElement).textContent = profile.email;
-  }
+  (document.getElementById('profile_email') as HTMLElement).textContent = profile.email ?? '';
+
   if (profile.picture) {
     const img = document.getElementById('profile_picture') as HTMLImageElement;
     img.src = profile.picture;
-    img.style.display = '';
+    img.onload = () => img.classList.remove('hidden');
   }
 }
+
 
 function fetchLinkedInProfile(token: string): Promise<{ name: string, email?: string, picture?: string }> {
   return fetch('https://api.linkedin.com/v2/userinfo', {
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Logout button logic
   const logoutBtn = document.getElementById('logout_btn');
+  console.log('logoutBtn', logoutBtn);
   logoutBtn?.addEventListener('click', () => {
     chrome.storage.local.remove(['linkedin_access_token', 'linkedin_expires_in', 'linkedin_token_timestamp'], () => {
       window.location.reload();

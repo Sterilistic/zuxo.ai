@@ -57,15 +57,15 @@
       </h1>
       <p class="text-gray-600 mt-2">Welcome, <span id="profile_name"></span>!</p>
     </div>
-    <div class="flex flex-col items-center space-y-2">
-      <img id="profile_picture" class="w-16 h-16 rounded-full border-2 border-indigo-400" src="" alt="Profile Picture" style="display:none;"/>
-      <p class="text-gray-700 text-sm mt-2" id="profile_email"></p>
+    <div class="flex flex-col items-center justify-center space-y-2 mt-4">
+      <img id="profile_picture" class="w-16 h-16 rounded-full border-2 border-indigo-400 hidden" src="" alt="Profile Picture" />
+      <p id="profile_email" class="text-gray-700 text-sm"></p>
     </div>
     <div class="text-center">
-      <button id="go_to_dashboard" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mb-6 flex items-center justify-center gap-2">
+      <button id="dashboard_btn" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mb-6 flex items-center justify-center gap-2">
         Go to Dashboard
       </button>
-      <button id="logout" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mb-6 flex items-center justify-center gap-2">
+      <button id="logout_btn" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mb-6 flex items-center justify-center gap-2">
         Logout
       </button>
     </div>

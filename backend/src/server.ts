@@ -107,7 +107,7 @@ app.post('/api/linkedin/token', async (req, res) => {
     const tokenData = await tokenResponse.json();
     console.log('LinkedIn token exchange successful');
     //Pull user id from linkedin
-    const userResponse = await fetch('https://api.linkedin.com/v2/me', {
+    const userResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`
       }
@@ -115,18 +115,23 @@ app.post('/api/linkedin/token', async (req, res) => {
 
     const userData = await userResponse.json();
     console.log('LinkedIn user data:', userData);
-    const userId = userData.id;
+    const userId = userData.sub;
     
     // Store token in database (optional)
     try {
       const db = client.db('content_saver');
       const collection = db.collection('linkedin_tokens');
       
-      await collection.insertOne({
-        accessToken: tokenData.access_token,
-        expiresIn: tokenData.expires_in,
-        createdAt: new Date(),
-        userId: userId // You might want to add user identification
+      await collection.updateOne({
+        userId: userId
+      }, {
+        $set: {
+          accessToken: tokenData.access_token,
+          expiresIn: tokenData.expires_in,
+          createdAt: new Date()
+        }
+      }, {
+        upsert: true
       });
     } catch (dbError) {
       console.error('Failed to store token in database:', dbError);
