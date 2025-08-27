@@ -6,13 +6,6 @@ const { DefinePlugin } = require('webpack');
 
 const Dotenv = require('dotenv-webpack');
 
-// Debug: Log environment variables
-console.log('Environment variables:');
-console.log('LINKEDIN_CLIENT_ID:', process.env.LINKEDIN_CLIENT_ID);
-console.log('LINKEDIN_AUTH_SCOPE:', process.env.LINKEDIN_AUTH_SCOPE);
-console.log('LINKEDIN_RESPONSE_TYPE:', process.env.LINKEDIN_RESPONSE_TYPE);
-
-
 module.exports = {
   entry: {
     background: './src/background.ts',
@@ -63,7 +56,6 @@ module.exports = {
       'LINKEDIN_CLIENT_ID': JSON.stringify(process.env.LINKEDIN_CLIENT_ID),
       'LINKEDIN_AUTH_SCOPE': JSON.stringify(process.env.LINKEDIN_AUTH_SCOPE),
       'LINKEDIN_RESPONSE_TYPE': JSON.stringify(process.env.LINKEDIN_RESPONSE_TYPE),
-      'LINKEDIN_STATE': JSON.stringify(process.env.LINKEDIN_STATE),
     })
   ],
 }; 

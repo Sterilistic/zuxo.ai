@@ -3,11 +3,13 @@
   "name": "Page Saver",
   "key":"ejbdlaldfpoiklmgfhicfobpgdhidhbj",
   "version": "1.0",
-  "description": "Save web pages with a floating button",
+  "description": "Save web pages with a floating button and keyboard shortcuts",
   "permissions": [
     "activeTab",
     "storage",
     "scripting",
+    "notifications",
+    "commands",
     "identity"
   ],
   "host_permissions": [
@@ -31,5 +33,14 @@
       "js": ["content.js"],
       "css": ["content.css"]
     }
-  ]
+  ],
+  "commands": {
+    "save-page": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Save the current page"
+    }
+  }
 } 

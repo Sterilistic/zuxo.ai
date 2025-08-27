@@ -1,7 +1,7 @@
 {
   "name": "page-saver-extension",
   "version": "1.0.0",
-  "description": "Chrome extension to save pages to cloud database",
+  "description": "Chrome extension to save web pages with keyboard shortcuts and floating button",
   "scripts": {
     "generate-icons": "npx ts-node scripts/generate-icons.ts",
     "prebuild": "pnpm run generate-icons",

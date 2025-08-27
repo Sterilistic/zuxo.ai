@@ -1,7 +1,7 @@
 {
-  "name": "content-saver-backend",
+  "name": "page-saver-backend",
   "version": "1.0.0",
-  "description": "Backend for content saver extension",
+  "description": "Backend API for page saver Chrome extension",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",

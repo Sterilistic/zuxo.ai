@@ -36,21 +36,74 @@ async function connectDB() {
 connectDB();
 
 // API endpoints
-app.post('/api/content', async (req, res) => {
+app.post('/api/pages', async (req, res) => {
   try {
-    const content = req.body;
-    const db = client.db('content_saver');
-    const collection = db.collection('saved_content');
+    const pageData = req.body;
+    const db = client.db('page_saver');
+    const collection = db.collection('saved_pages');
     
-    await collection.insertOne({
-      ...content,
-      createdAt: new Date()
-    });
+    // Add metadata
+    const pageToSave = {
+      ...pageData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    await collection.insertOne(pageToSave);
 
-    res.status(200).json({ success: true });
+    res.status(200).json({ 
+      success: true, 
+      message: 'Page saved successfully',
+      id: pageToSave._id 
+    });
   } catch (error) {
-    console.error('Error saving content:', error);
-    res.status(500).json({ success: false, error: 'Failed to save content' });
+    console.error('Error saving page:', error);
+    res.status(500).json({ success: false, error: 'Failed to save page' });
+  }
+});
+
+// Get all saved pages
+app.get('/api/pages', async (req, res) => {
+  try {
+    const db = client.db('page_saver');
+    const collection = db.collection('saved_pages');
+    
+    const pages = await collection
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(100)
+      .toArray();
+
+    res.status(200).json({ 
+      success: true, 
+      pages 
+    });
+  } catch (error) {
+    console.error('Error fetching pages:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch pages' });
+  }
+});
+
+// Delete a saved page
+app.delete('/api/pages/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const db = client.db('page_saver');
+    const collection = db.collection('saved_pages');
+    
+    const result = await collection.deleteOne({ _id: id as any });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Page not found' });
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Page deleted successfully' 
+    });
+  } catch (error) {
+    console.error('Error deleting page:', error);
+    res.status(500).json({ success: false, error: 'Failed to delete page' });
   }
 });
 
@@ -106,7 +159,8 @@ app.post('/api/linkedin/token', async (req, res) => {
 
     const tokenData = await tokenResponse.json();
     console.log('LinkedIn token exchange successful');
-    //Pull user id from linkedin
+    
+    // Pull user id from linkedin
     const userResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`
@@ -119,7 +173,7 @@ app.post('/api/linkedin/token', async (req, res) => {
     
     // Store token in database (optional)
     try {
-      const db = client.db('content_saver');
+      const db = client.db('page_saver');
       const collection = db.collection('linkedin_tokens');
       
       await collection.updateOne({
@@ -156,6 +210,15 @@ app.post('/api/linkedin/token', async (req, res) => {
   }
 });
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    success: true, 
+    message: 'Page Saver API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Handle shutdown
 process.on('SIGINT', async () => {
   await client.close();
@@ -163,5 +226,5 @@ process.on('SIGINT', async () => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Page Saver API running on port ${port}`);
 }); 

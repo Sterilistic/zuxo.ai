@@ -1,5 +1,3 @@
-import { SavedContent } from './platforms/base';
-
 // MongoDB API endpoint (you'll need to set this up)
 const API_ENDPOINT = 'http://localhost:3000/api';
 
@@ -13,9 +11,17 @@ const redirectUri = 'https://' + chrome.runtime.id + '.chromiumapp.org/';
 const scope = LINKEDIN_AUTH_SCOPE;
 const responseType = LINKEDIN_RESPONSE_TYPE;
 
+interface SavedPage {
+  url: string;
+  title: string;
+  timestamp: number;
+  description?: string;
+}
+
+// Listen for messages from popup and content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'SAVE_CONTENT') {
-    saveContent(message.data)
+  if (message.type === 'SAVE_PAGE') {
+    savePage(message.data)
       .then(() => sendResponse({ success: true }))
       .catch((error) => sendResponse({ success: false, error }));
     return true;
@@ -26,6 +32,41 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .then((result) => sendResponse({ success: true, data: result }))
       .catch((error) => sendResponse({ success: false, error: error.message }));
     return true; // Keep the message channel open for async response
+  }
+});
+
+// Handle keyboard shortcuts
+chrome.commands.onCommand.addListener(async (command) => {
+  if (command === 'save-page') {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab.url && tab.title) {
+        const pageData: SavedPage = {
+          url: tab.url,
+          title: tab.title,
+          timestamp: Date.now(),
+          description: `Saved via keyboard shortcut from ${new URL(tab.url).hostname}`
+        };
+        
+        await savePage(pageData);
+        
+        // Show notification
+        chrome.notifications.create({
+          type: 'basic',
+          iconUrl: 'icons/icon48.png',
+          title: 'Page Saved!',
+          message: `"${tab.title}" has been saved successfully.`
+        });
+      }
+    } catch (error) {
+      console.error('Error saving page via shortcut:', error);
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'icons/icon48.png',
+        title: 'Save Failed',
+        message: 'Failed to save the current page.'
+      });
+    }
   }
 });
 
@@ -137,21 +178,29 @@ async function exchangeCodeForToken(code: string, redirectUri: string) {
   }
 }
 
-async function saveContent(content: SavedContent) {
+async function savePage(pageData: SavedPage) {
   try {
-    const response = await fetch(`${API_ENDPOINT}/content`, {
+    const response = await fetch(`${API_ENDPOINT}/pages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(content)
+      body: JSON.stringify(pageData)
     });
 
     if (!response.ok) {
-      throw new Error('Failed to save content');
+      throw new Error('Failed to save page');
     }
+
+    // Store in local storage as backup
+    const savedPages = await chrome.storage.local.get(['savedPages']);
+    const pages = savedPages.savedPages || [];
+    pages.push(pageData);
+    await chrome.storage.local.set({ savedPages: pages });
+
+    return await response.json();
   } catch (error) {
-    console.error('Error saving content:', error);
+    console.error('Error saving page:', error);
     throw error;
   }
 } 
