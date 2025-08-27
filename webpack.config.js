@@ -9,7 +9,7 @@ const Dotenv = require('dotenv-webpack');
 module.exports = {
   entry: {
     background: './src/background.ts',
-    content: ['./src/global.css', './src/content.ts'],
+    content: './src/content.ts',
     popup: './src/popup/popup.ts'
   },
   mode: 'production',
@@ -46,7 +46,6 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: "manifest.json", to: "manifest.json" },
-        { from: "src/content.css", to: "content.css" },
         { from: "src/popup/popup.html", to: "popup.html" },
         { from: "src/popup/popup.output.css", to: "popup.output.css" },
         { from: "icons", to: "icons" }
