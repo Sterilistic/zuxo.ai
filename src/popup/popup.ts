@@ -209,3 +209,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     chrome.tabs.create({ url: 'http://localhost:3000/dashboard' });
   });
 });
+
+// Add this to popup.ts to test
+chrome.permissions.contains({
+  permissions: ['bookmarks']
+}, (result) => {
+  console.log('Has bookmarks permission:', result);
+});

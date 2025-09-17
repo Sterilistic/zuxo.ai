@@ -12,7 +12,7 @@ function createFloatingSaveButton() {
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
     </svg>
   `;
-  button.title = 'Save this page (Ctrl+Shift+S)';
+  button.title = 'Save this page (Ctrl+Shift+W)';
   
   // Add styles
   button.style.cssText = `
@@ -73,7 +73,7 @@ function createFloatingSaveButton() {
         
         setTimeout(() => {
           button.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
-          button.title = 'Save this page (Ctrl+Shift+S)';
+          button.title = 'Save this page (Ctrl+Shift+W)';
         }, 2000);
       } else {
         throw new Error(response.error || 'Failed to save page');
@@ -96,7 +96,7 @@ function createFloatingSaveButton() {
           </svg>
         `;
         button.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
-        button.title = 'Save this page (Ctrl+Shift+S)';
+        button.title = 'Save this page (Ctrl+Shift+W)';
       }, 2000);
     }
   });

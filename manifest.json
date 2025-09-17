@@ -10,7 +10,8 @@
     "scripting",
     "notifications",
     "commands",
-    "identity"
+    "identity",
+    "bookmarks"
   ],
   "host_permissions": [
     "http://localhost:3000/*",
@@ -36,8 +37,8 @@
   "commands": {
     "save-page": {
       "suggested_key": {
-        "default": "Ctrl+Shift+S",
-        "mac": "Command+Shift+S"
+        "default": "Ctrl+Shift+W",
+        "mac": "Ctrl+Shift+S"
       },
       "description": "Save the current page"
     }
