@@ -1,42 +1,50 @@
-# Page Saver Chrome Extension
+# Zuxo - AI-Powered Bookmark Organizer
 
-A powerful Chrome extension with a modern web dashboard that allows you to save web pages instantly with keyboard shortcuts and a floating button. Features secure LinkedIn authentication and automatic bookmark synchronization for seamless page management across your browsing experience.
+Zuxo is an intelligent Chrome extension that transforms how you save, organize, and discover your bookmarks. Using AI-powered categorization and smart labeling, Zuxo automatically organizes your saved pages into meaningful categories, making it easier to find and maintain your digital knowledge base. With seamless Chrome search integration, Zuxo suggests relevant saved content when you search, helping you rediscover valuable resources you've saved before.
 
 ## 🚀 Features
 
+### AI-Powered Organization
+- **🤖 Smart Categorization**: AI automatically categorizes your bookmarks into relevant topics and themes
+- **🏷️ Intelligent Labeling**: Automatically generates meaningful tags and labels for better organization
+- **🔍 Context Preservation**: Saves the context and purpose of each bookmark for future reference
+- **📊 Usage Analytics**: Tracks which categories and bookmarks you use most frequently
+
 ### Chrome Extension
-- **🔐 LinkedIn Authentication**: Secure login with LinkedIn OAuth for both extension and dashboard
-- **⌨️ Keyboard Shortcut**: Press `Ctrl+Shift+W` to save the current page instantly
-- **🎯 Floating Button**: A floating save button appears on every webpage when logged in
-- **📱 Popup Interface**: Click the extension icon to see recent saves and save the current page
-- **💾 Local Storage**: Pages are stored locally as backup even if the backend is unavailable
-- **🔔 Notifications**: Get notified when pages are saved successfully
-- **🔄 Auto Sync**: Automatic bookmark synchronization when you create new bookmarks
-- **⏰ Periodic Sync**: Syncs your bookmarks every hour to keep everything up to date
+- **⌨️ Instant Save**: Press `Ctrl+Shift+W` to save any webpage with AI-powered categorization
+- **🎯 Smart Floating Button**: Context-aware save button that appears when you're on valuable content
+- **📱 Intelligent Popup**: See your recently saved and most relevant bookmarks at a glance
+- **🔔 Smart Notifications**: Get notified when your bookmarks are categorized and organized
+- **🔄 Auto Sync**: Automatically syncs your existing Chrome bookmarks and organizes them
+- **⏰ Continuous Learning**: AI learns from your usage patterns to improve categorization
 
 ### Web Dashboard
-- **🎨 Modern UI**: Beautiful, responsive dashboard with real-time statistics
-- **📊 Page Management**: View, search, filter, and delete saved pages
-- **👤 User Authentication**: Secure LinkedIn OAuth login for web access
-- **📤 Export Functionality**: Download your saved pages as JSON
-- **📄 Pagination**: Efficient browsing through large collections of saved pages
-- **🏷️ Domain Filtering**: Filter pages by website domain
-- **📈 Page Statistics**: View total pages, weekly saves, and unique domains
-- **🔄 Unified Login**: Login once and access both extension and dashboard seamlessly
+- **🎨 Modern Interface**: Beautiful, responsive dashboard with AI-powered insights
+- **📊 Smart Analytics**: View your bookmark usage patterns and category distributions
+- **🔍 Advanced Search**: Find bookmarks by category, tags, content, or context
+- **📤 Export & Backup**: Download your organized bookmark collection
+- **🏷️ Category Management**: View and manage AI-generated categories
+- **📈 Usage Insights**: See which categories and bookmarks are most valuable to you
 
-## 🎯 How It Works
+## 🎯 How Zuxo Works
 
-### Saving Pages
-1. **Login**: Authenticate with LinkedIn through the extension or dashboard
-2. **Save Instantly**: Use `Ctrl+Shift+W` keyboard shortcut or click the floating button
-3. **Auto Sync**: Your Chrome bookmarks are automatically synchronized
-4. **Manage**: View and organize all your saved pages in the web dashboard
+### Intelligent Bookmark Management
+1. **Save with Context**: Use `Ctrl+Shift+W` to save any webpage - Zuxo captures the page content and context
+2. **AI Analysis**: Our AI analyzes the content, title, and context to understand what you're saving
+3. **Smart Categorization**: Automatically assigns relevant categories and tags based on content analysis
+4. **Organized Storage**: Your bookmarks are stored with rich metadata for easy discovery
 
-### Smart Synchronization
-- **Real-time Sync**: New bookmarks are synced immediately when created
-- **Periodic Updates**: Background sync every hour keeps everything current
-- **Cross-Platform**: Access your saved pages from both extension and dashboard
-- **Secure Storage**: All data is securely stored with proper authentication
+### Chrome Search Integration
+- **Smart Suggestions**: When you search in Chrome, Zuxo suggests relevant saved bookmarks
+- **Context-Aware Results**: AI matches your search intent with your saved content
+- **Rediscovery**: Never lose valuable resources - Zuxo helps you find them when you need them
+- **Usage Learning**: The more you use Zuxo, the better it becomes at suggesting relevant content
+
+### Continuous Organization
+- **Auto-Sync**: Existing Chrome bookmarks are automatically imported and organized
+- **Background Processing**: AI continuously analyzes and improves categorization
+- **Usage Analytics**: Learn which categories and bookmarks are most valuable to you
+- **Maintenance-Free**: Zuxo keeps your bookmark collection organized without manual effort
 
 ## 🔒 Security & Privacy
 
@@ -65,15 +73,16 @@ A powerful Chrome extension with a modern web dashboard that allows you to save 
 - **LinkedIn OAuth 2.0**: Authentication provider
 - **Clean Architecture**: Modular, maintainable code structure
 
-## 🚀 Key Benefits
+## 🚀 Why Choose Zuxo
 
-- **⚡ Instant Saving**: Save any webpage with a single keyboard shortcut
-- **🔄 Automatic Sync**: Your Chrome bookmarks are automatically synchronized
-- **🌐 Cross-Platform**: Access your saved pages from both extension and dashboard
-- **🔐 Secure**: LinkedIn authentication ensures your data is protected
-- **📊 Organized**: Beautiful dashboard to manage and organize your saved pages
-- **💾 Reliable**: Local storage backup ensures your data is never lost
-- **🎯 User-Friendly**: Intuitive interface with floating buttons and notifications
+- **🧠 AI-Powered Intelligence**: Never manually organize bookmarks again - AI does it for you
+- **🔍 Smart Discovery**: Find your saved content when you need it through Chrome search integration
+- **📈 Improved Productivity**: Spend less time organizing and more time using your saved resources
+- **🎯 Context Preservation**: Remember why you saved something, not just what you saved
+- **🔄 Seamless Integration**: Works naturally with your existing Chrome browsing habits
+- **📊 Usage Insights**: Understand your knowledge patterns and improve your information management
+- **🛡️ Privacy-First**: Your data stays secure with enterprise-grade authentication and storage
+- **⚡ Zero Maintenance**: Set it and forget it - Zuxo keeps improving your organization automatically
 
 ## License
 
