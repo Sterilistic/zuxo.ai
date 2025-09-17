@@ -2,6 +2,19 @@ import express from 'express';
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import session from 'express-session';
+
+// Extend Express session interface
+declare module 'express-session' {
+  interface SessionData {
+    userId?: string;
+    userName?: string;
+    userEmail?: string;
+    accessToken?: string;
+    oauthState?: string;
+  }
+}
 
 dotenv.config();
 
@@ -23,6 +36,17 @@ const client = new MongoClient(uri!, {
 app.use(cors());
 app.use(express.json());
 
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true in production with HTTPS
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
 // Connect to MongoDB
 async function connectDB() {
   try {
@@ -35,8 +59,31 @@ async function connectDB() {
 
 connectDB();
 
-// API endpoints
-app.post('/api/pages', async (req, res) => {
+// Authentication middleware
+function requireAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (req.session && req.session.userId) {
+    return next();
+  } else {
+    return res.redirect('/login');
+  }
+}
+
+// Serve static files
+app.use('/css', express.static(path.join(__dirname, '../src/public/css')));
+app.use('/js', express.static(path.join(__dirname, '../src/public/js')));
+
+// Login page route
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '../src/views/login.html'));
+});
+
+// Dashboard route (protected)
+app.get('/dashboard', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, '../src/views/dashboard.html'));
+});
+
+// API endpoints (protected)
+app.post('/api/pages', requireAuth, async (req, res) => {
   try {
     const pageData = req.body;
     const db = client.db('page_saver');
@@ -63,7 +110,7 @@ app.post('/api/pages', async (req, res) => {
 });
 
 // Get all saved pages
-app.get('/api/pages', async (req, res) => {
+app.get('/api/pages', requireAuth, async (req, res) => {
   try {
     const db = client.db('page_saver');
     const collection = db.collection('saved_pages');
@@ -85,7 +132,7 @@ app.get('/api/pages', async (req, res) => {
 });
 
 // Delete a saved page
-app.delete('/api/pages/:id', async (req, res) => {
+app.delete('/api/pages/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const db = client.db('page_saver');
@@ -208,6 +255,115 @@ app.post('/api/linkedin/token', async (req, res) => {
       error: 'Internal server error during token exchange' 
     });
   }
+});
+
+// Web-based LinkedIn OAuth flow
+app.get('/auth/linkedin', (req, res) => {
+  const state = Math.random().toString(36).substring(2);
+  req.session.oauthState = state;
+  
+  const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${encodeURIComponent('http://localhost:3000/auth/linkedin/callback')}&scope=r_liteprofile%20r_emailaddress&state=${state}`;
+  
+  res.redirect(authUrl);
+});
+
+// LinkedIn OAuth callback
+app.get('/auth/linkedin/callback', async (req, res) => {
+  try {
+    const { code, state } = req.query;
+    
+    // Verify state parameter
+    if (state !== req.session.oauthState) {
+      return res.status(400).send('Invalid state parameter');
+    }
+    
+    if (!code) {
+      return res.status(400).send('Authorization code not provided');
+    }
+
+    // Exchange code for token
+    const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code as string,
+        redirect_uri: 'http://localhost:3000/auth/linkedin/callback',
+        client_id: LINKEDIN_CLIENT_ID!,
+        client_secret: LINKEDIN_CLIENT_SECRET!,
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      throw new Error('Token exchange failed');
+    }
+
+    const tokenData = await tokenResponse.json();
+    
+    // Get user info
+    const userResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+      headers: {
+        'Authorization': `Bearer ${tokenData.access_token}`
+      }
+    });
+
+    const userData = await userResponse.json();
+    
+    // Store user session
+    req.session.userId = userData.sub;
+    req.session.userName = userData.name || (userData.localizedFirstName + ' ' + userData.localizedLastName);
+    req.session.userEmail = userData.email;
+    req.session.accessToken = tokenData.access_token;
+    
+    // Store token in database
+    try {
+      const db = client.db('page_saver');
+      const collection = db.collection('linkedin_tokens');
+      
+      await collection.updateOne({
+        userId: userData.sub
+      }, {
+        $set: {
+          accessToken: tokenData.access_token,
+          expiresIn: tokenData.expires_in,
+          createdAt: new Date()
+        }
+      }, {
+        upsert: true
+      });
+    } catch (dbError) {
+      console.error('Failed to store token in database:', dbError);
+    }
+    
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error('OAuth callback error:', error);
+    res.status(500).send('Authentication failed');
+  }
+});
+
+// Logout route
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Session destruction error:', err);
+    }
+    res.redirect('/login');
+  });
+});
+
+// User info endpoint
+app.get('/api/user', requireAuth, (req, res) => {
+  res.json({
+    success: true,
+    user: {
+      id: req.session.userId,
+      name: req.session.userName,
+      email: req.session.userEmail
+    }
+  });
 });
 
 // Health check endpoint
