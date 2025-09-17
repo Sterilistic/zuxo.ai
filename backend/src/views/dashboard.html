@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Saver Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📚 Page Saver Dashboard</h1>
+            <div class="user-info">
+                <div class="user-details">
+                    <span id="user-name">Loading...</span>
+                    <span id="user-email" class="user-email"></span>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Pages</h3>
+                <span id="total-pages">0</span>
+            </div>
+            <div class="stat-card">
+                <h3>This Week</h3>
+                <span id="week-pages">0</span>
+            </div>
+            <div class="stat-card">
+                <h3>Domains</h3>
+                <span id="unique-domains">0</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="search-input" placeholder="Search pages..." class="search-input">
+            <select id="domain-filter" class="filter-select">
+                <option value="">All Domains</option>
+            </select>
+            <button id="export-btn" class="btn btn-primary">Export</button>
+        </div>
+
+        <div class="pages-list" id="pages-list">
+            <!-- Pages will be loaded here -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be generated here -->
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
