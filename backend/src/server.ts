@@ -26,7 +26,10 @@ function createApp(): express.Application {
   app.set('trust proxy', 1);
 
   // Middleware
-  app.use(cors(config.cors));
+  app.use(cors({
+    ...config.cors,
+    credentials: true // Allow credentials for session sharing
+  }));
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true }));
   app.use(requestLogger);
@@ -112,7 +115,6 @@ function createApp(): express.Application {
       });
 
       const userData = await userResponse.json();
-      console.log('LinkedIn user data:', userData);
       const userId = userData.sub;
       
       // Store token in database (optional)

@@ -6,7 +6,7 @@ import { asyncHandler } from '../middleware/errorHandler';
 const router: Router = Router();
 
 /**
- * Save a new page
+ * Save a new page (session-based auth)
  */
 router.post('/', requireAuth, asyncHandler(async (req: Request, res: Response) => {
   const pageData = req.body;
@@ -17,6 +17,65 @@ router.post('/', requireAuth, asyncHandler(async (req: Request, res: Response) =
     message: 'Page saved successfully',
     data: savedPage
   });
+}));
+
+/**
+ * Save a new page (token-based auth for extension)
+ */
+router.post('/token', asyncHandler(async (req: Request, res: Response) => {
+  console.log('Saving page from extension (token auth)');
+  const { pageData } = req.body;
+  
+  if (!pageData) {
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Page data is required' 
+    });
+  }
+
+  // Get token from Authorization header
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Authorization header with Bearer token is required' 
+    });
+  }
+
+  const accessToken = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+  // Verify the token by fetching user info
+  try {
+    const userResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    if (!userResponse.ok) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Invalid access token' 
+      });
+    }
+
+    const userData = await userResponse.json();
+    console.log('Token verified for user:', userData.sub);
+    
+    const savedPage = await PageService.savePage(pageData);
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Page saved successfully',
+      data: savedPage
+    });
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Token verification failed' 
+    });
+  }
 }));
 
 /**
@@ -61,6 +120,97 @@ router.delete('/:id', requireAuth, asyncHandler(async (req: Request, res: Respon
     success: true, 
     message: 'Page deleted successfully' 
   });
+}));
+
+/**
+ * Sync bookmarks from extension (session-based auth)
+ */
+router.post('/bookmarks', requireAuth, asyncHandler(async (req: Request, res: Response) => {
+  console.log('Syncing bookmarks from extension (session auth)');
+  const { bookmarks } = req.body;
+  console.log('Bookmarks:', bookmarks);
+
+  if (!bookmarks || !Array.isArray(bookmarks)) {
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Bookmarks array is required' 
+    });
+  }
+
+  const results = await PageService.syncBookmarks(bookmarks);
+
+  res.status(200).json({ 
+    success: true, 
+    message: `Synced ${results.synced} bookmarks`,
+    data: {
+      synced: results.synced,
+      skipped: results.skipped,
+      total: bookmarks.length
+    }
+  });
+}));
+
+/**
+ * Sync bookmarks from extension (token-based auth)
+ */
+router.post('/bookmarks/token', asyncHandler(async (req: Request, res: Response) => {
+  console.log('Syncing bookmarks from extension (token auth)');
+  const { bookmarks } = req.body;
+  
+  if (!bookmarks || !Array.isArray(bookmarks)) {
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Bookmarks array is required' 
+    });
+  }
+
+  // Get token from Authorization header
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Authorization header with Bearer token is required' 
+    });
+  }
+
+  const accessToken = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+  // Verify the token by fetching user info
+  try {
+    const userResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    if (!userResponse.ok) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Invalid access token' 
+      });
+    }
+
+    const userData = await userResponse.json();
+    console.log('Token verified for user:', userData.sub);
+    
+    const results = await PageService.syncBookmarks(bookmarks);
+
+    res.status(200).json({ 
+      success: true, 
+      message: `Synced ${results.synced} bookmarks`,
+      data: {
+        synced: results.synced,
+        skipped: results.skipped,
+        total: bookmarks.length
+      }
+    });
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Token verification failed' 
+    });
+  }
 }));
 
 export default router;

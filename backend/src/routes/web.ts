@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { requireAuth } from '../middleware/auth';
+import { requireAuth, clearUserSession } from '../middleware/auth';
 import path from 'path';
 
 const router: Router = Router();
@@ -24,12 +24,41 @@ router.get('/dashboard', requireAuth, (req, res) => {
 router.get('/api/user', requireAuth, (req, res) => {
   res.json({
     success: true,
-    user: {
+    data: {
       id: req.session.userId,
       name: req.session.userName,
-      email: req.session.userEmail
+      email: req.session.userEmail,
+      picture: req.session.profilePicture
     }
   });
+});
+
+/**
+ * Logout route
+ */
+router.get('/logout', clearUserSession);
+
+/**
+ * Session validation endpoint for extension
+ */
+router.get('/api/session/validate', (req, res) => {
+  if (req.session && req.session.userId) {
+    res.json({
+      success: true,
+      authenticated: true,
+      user: {
+        id: req.session.userId,
+        name: req.session.userName,
+        email: req.session.userEmail,
+        picture: req.session.profilePicture
+      }
+    });
+  } else {
+    res.json({
+      success: true,
+      authenticated: false
+    });
+  }
 });
 
 /**

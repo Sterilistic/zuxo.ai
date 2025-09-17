@@ -6,6 +6,7 @@ declare module 'express-session' {
     userId?: string;
     userName?: string;
     userEmail?: string;
+    profilePicture?: string;
     accessToken?: string;
     oauthState?: string;
   }
@@ -76,12 +77,14 @@ export function storeUserSession(
     localizedFirstName?: string;
     localizedLastName?: string;
     email?: string;
+    profilePicture?: string;
   },
   accessToken: string
 ): void {
   req.session.userId = userData.sub;
   req.session.userName = userData.name || (userData.localizedFirstName + ' ' + userData.localizedLastName);
   req.session.userEmail = userData.email;
+  req.session.profilePicture = userData.profilePicture;
   req.session.accessToken = accessToken;
 }
 

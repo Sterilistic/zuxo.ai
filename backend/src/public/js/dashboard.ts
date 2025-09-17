@@ -28,8 +28,9 @@ class Dashboard {
         this.initializeEventListeners();
         this.loadUserInfo();
         this.loadPages();
+        this.checkExtensionLoginStatus();
     }
-
+    
     // Private method - only accessible within the class
     private initializeEventListeners(): void {
         const searchInput = document.getElementById('search-input') as HTMLInputElement;
@@ -246,14 +247,24 @@ class Dashboard {
     private async loadUserInfo(): Promise<void> {
         try {
             const response = await fetch('/api/user');
-            const result: ApiResponse<{id: string, name: string, email: string}> = await response.json();
+            const result: ApiResponse<{id: string, name: string, email: string, picture?: string}> = await response.json();
             
             if (result.success && result.data) {
-                this.updateElement('user-name', result.data.name);
-                this.updateElement('user-email', result.data.email);
+                this.updateElement('user-name', result.data.name || 'User');
+                this.updateElement('user-email', result.data.email || '');
+                
+                // Handle user picture
+                const userPicture = document.getElementById('user-picture') as HTMLImageElement;
+                if (result.data.picture && userPicture) {
+                    userPicture.src = result.data.picture;
+                    userPicture.classList.remove('hidden');
+                } else if (userPicture) {
+                    userPicture.classList.add('hidden');
+                }
             }
         } catch (error) {
             console.error('Error loading user info:', error);
+            this.updateElement('user-name', 'Error loading user info');
         }
     }
 
@@ -261,6 +272,17 @@ class Dashboard {
         if (confirm('Are you sure you want to logout?')) {
             window.location.href = '/logout';
         }
+    }
+
+    /**
+     * Check if user is logged in via extension and sync if needed
+     */
+    private checkExtensionLoginStatus(): void {
+        console.log('Dashboard loaded, checking for extension login status...');
+        
+        // We could add logic here to check if the user came from the extension
+        // and automatically sync their session if needed
+        // For now, this is just a placeholder for future extension integration
     }
 
     private showError(message: string): void {

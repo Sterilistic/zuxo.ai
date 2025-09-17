@@ -42,6 +42,24 @@ body {
 
 .user-details {
     display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e2e8f0;
+}
+
+.user-picture.hidden {
+    display: none;
+}
+
+.user-text {
+    display: flex;
     flex-direction: column;
     align-items: flex-end;
 }

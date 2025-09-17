@@ -14,7 +14,7 @@ router.get('/linkedin', (req, res) => {
   const state = generateOAuthState();
   req.session.oauthState = state;
   
-  const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${encodeURIComponent('http://localhost:3000/auth/linkedin/callback')}&scope=r_liteprofile%20r_emailaddress&state=${state}`;
+  const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${encodeURIComponent('http://localhost:3000/auth/linkedin/callback')}&scope=openid%20email%20profile&state=${state}`;
   
   res.redirect(authUrl);
 });
@@ -64,7 +64,6 @@ router.get('/linkedin/callback', async (req, res) => {
     });
 
     const userData = await userResponse.json();
-    
     // Store user session
     storeUserSession(req, userData, tokenData.access_token);
     
@@ -72,9 +71,10 @@ router.get('/linkedin/callback', async (req, res) => {
     try {
       const { getDatabase } = await import('../config/database');
       const db = getDatabase();
-      const collection = db.collection('linkedin_tokens');
-      
-      await collection.updateOne({
+      const tokensCollection = db.collection('linkedin_tokens');
+      const usersCollection = db.collection('users');
+
+      await tokensCollection.updateOne({
         userId: userData.sub
       }, {
         $set: {
@@ -85,6 +85,21 @@ router.get('/linkedin/callback', async (req, res) => {
       }, {
         upsert: true
       });
+
+      await usersCollection.updateOne({
+        userId: userData.sub
+      }, {
+        $set: {
+          name: userData.name,
+          email: userData.email,
+          linkedinId: userData.sub,
+          profilePicture: userData.picture,
+          country: userData.locale.country
+        }
+      }, {
+        upsert: true
+      });
+      
     } catch (dbError) {
       console.error('Failed to store token in database:', dbError);
     }

@@ -4,11 +4,12 @@
   "description": "Backend API for page saver Chrome extension",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy:assets",
     "build:watch": "tsc --watch",
     "start": "node dist/server.js",
     "dev": "ts-node-dev src/server.ts",
-    "build:frontend": "tsc src/public/js/dashboard.ts --outDir dist/public/js --target ES2020 --lib ES2020,DOM"
+    "build:frontend": "tsc src/public/js/dashboard.ts --outDir dist/public/js --target ES2020 --lib ES2020,DOM",
+    "copy:assets": "mkdir -p dist/views dist/public/css dist/public/js && cp -r src/views/* dist/views/ && cp -r src/public/css/* dist/public/css/ && cp -r src/public/js/* dist/public/js/"
   },
   "dependencies": {
     "cors": "^2.8.5",

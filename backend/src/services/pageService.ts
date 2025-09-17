@@ -89,4 +89,44 @@ export class PageService {
       uniqueDomains
     };
   }
+
+  /**
+   * Sync bookmarks from extension
+   */
+  static async syncBookmarks(bookmarks: any[]): Promise<{synced: number, skipped: number}> {
+    const db = getDatabase();
+    const collection = db.collection('saved_pages');
+    
+    let synced = 0;
+    let skipped = 0;
+    console.log('Bookmarks:', bookmarks);
+    for (const bookmark of bookmarks) {
+      try {
+        // Check if bookmark already exists by URL
+        const existing = await collection.findOne({ url: bookmark.url });
+        
+        if (!existing) {
+          // Convert bookmark to our page format
+          const pageData = {
+            url: bookmark.url,
+            title: bookmark.title || 'Untitled',
+            timestamp: bookmark.dateAdded || Date.now(),
+            description: bookmark.description || '',
+            createdAt: new Date(),
+            updatedAt: new Date()
+          };
+          
+          await collection.insertOne(pageData);
+          synced++;
+        } else {
+          skipped++;
+        }
+      } catch (error) {
+        console.error('Error syncing bookmark:', error);
+        skipped++;
+      }
+    }
+    
+    return { synced, skipped };
+  }
 }
